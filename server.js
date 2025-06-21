@@ -1,4 +1,3 @@
-
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
@@ -14,15 +13,20 @@ app.get('/', (req, res) => {
   res.send('Sirius Backend Çalışıyor');
 });
 
-app.get('/api/trendyol/products', async (req, res) => {
+app.get('/api/pazarama/products', async (req, res) => {
   try {
-    const response = await axios.get('https://api.trendyol.com/sapigw/suppliers/123456/products', {
+    const sellerId = process.env.PAZARAMA_SELLER_ID;
+    const apiKey = process.env.PAZARAMA_API_KEY;
+    const apiSecret = process.env.PAZARAMA_API_SECRET;
+
+    const response = await axios.get(`https://api.pazarama.com/v1/sellers/${sellerId}/products`, {
       headers: {
-        'Authorization': `Basic ${process.env.TRENDYOL_API_KEY}`,
-        'User-Agent': 'axios',
+        'X-API-KEY': apiKey,
+        'X-API-SECRET': apiSecret,
         'Content-Type': 'application/json'
       }
     });
+
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: 'Veri çekilemedi', details: error.message });
